@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brett's Build Log</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #080808;
+      --white: #f5f2ee;
+      --gold: #c9a84c;
+      --gold-dim: #7a5f28;
+      --gold-faint: rgba(201,168,76,0.08);
+      --surface: #0e0d0d;
+      --border: rgba(201,168,76,0.1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Mono', monospace;
+      padding: 0;
+    }
+
+    /* Grain */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Grid */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.025) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      margin-bottom: 48px;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .header-label {
+      font-size: 9px;
+      letter-spacing: 4px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+    }
+
+    .header-date {
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: rgba(245,242,238,0.2);
+    }
+
+    .header-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 300;
+      line-height: 1.05;
+      margin-bottom: 8px;
+    }
+
+    .header-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .header-sub {
+      font-size: 10px;
+      color: rgba(245,242,238,0.25);
+      letter-spacing: 1px;
+    }
+
+    /* ── STATS ROW ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+
+    .stat-card {
+      border: 1px solid var(--border);
+      padding: 16px;
+      background: var(--surface);
+      position: relative;
+    }
+
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: rgba(245,242,238,0.25);
+      text-transform: uppercase;
+    }
+
+    /* ── ADD TASK ── */
+    .add-section {
+      margin-bottom: 32px;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+
+    .add-label {
+      font-size: 9px;
+      letter-spacing: 4px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .add-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .add-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--white);
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      padding: 14px 16px;
+      outline: none;
+      transition: border-color 0.2s;
+      letter-spacing: 0.5px;
+    }
+
+    .add-input::placeholder {
+      color: rgba(245,242,238,0.15);
+    }
+
+    .add-input:focus {
+      border-color: rgba(201,168,76,0.4);
+    }
+
+    .tag-select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--gold-dim);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      padding: 14px 12px;
+      outline: none;
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+
+    .tag-select option {
+      background: var(--surface);
+      color: var(--white);
+    }
+
+    .add-btn {
+      background: var(--gold);
+      border: none;
+      color: var(--black);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 14px 20px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    .add-btn:hover { opacity: 0.85; }
+    .add-btn:active { opacity: 0.7; }
+
+    /* ── FILTERS ── */
+    .filters {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.7s 0.25s ease both;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: rgba(245,242,238,0.3);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .filter-btn.active {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: var(--gold-faint);
+    }
+
+    /* ── TASKS ── */
+    .tasks-section {
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+
+    .tasks-label {
+      font-size: 9px;
+      letter-spacing: 4px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .clear-done {
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: rgba(245,242,238,0.2);
+      cursor: pointer;
+      text-transform: uppercase;
+      background: none;
+      border: none;
+      font-family: 'DM Mono', monospace;
+      transition: color 0.2s;
+    }
+
+    .clear-done:hover { color: rgba(245,242,238,0.5); }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, opacity 0.3s;
+      animation: slideIn 0.3s ease both;
+      position: relative;
+    }
+
+    .task-item.done {
+      opacity: 0.45;
+      border-color: rgba(201,168,76,0.04);
+    }
+
+    .task-item.done .task-title {
+      text-decoration: line-through;
+      text-decoration-color: var(--gold-dim);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .task-check {
+      width: 18px;
+      height: 18px;
+      border: 1px solid rgba(201,168,76,0.4);
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .task-check:hover {
+      border-color: var(--gold);
+      background: var(--gold-faint);
+    }
+
+    .task-item.done .task-check {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .task-check svg {
+      width: 10px;
+      height: 10px;
+      stroke: var(--black);
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .task-item.done .task-check svg {
+      opacity: 1;
+    }
+
+    .task-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-title {
+      font-size: 12px;
+      color: var(--white);
+      letter-spacing: 0.5px;
+      line-height: 1.5;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .task-tag {
+      font-size: 8px;
+      letter-spacing: 2px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border: 1px solid rgba(201,168,76,0.18);
+    }
+
+    .task-time {
+      font-size: 9px;
+      color: rgba(245,242,238,0.2);
+      letter-spacing: 1px;
+    }
+
+    .task-complete-time {
+      font-size: 9px;
+      color: rgba(201,168,76,0.4);
+      letter-spacing: 1px;
+    }
+
+    .task-delete {
+      background: none;
+      border: none;
+      color: rgba(245,242,238,0.1);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 2px 4px;
+      transition: color 0.2s;
+      flex-shrink: 0;
+      font-family: 'DM Mono', monospace;
+      line-height: 1;
+    }
+
+    .task-delete:hover { color: rgba(245,242,238,0.5); }
+
+    /* ── EMPTY STATE ── */
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      border: 1px dashed rgba(201,168,76,0.1);
+    }
+
+    .empty-icon {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 300;
+      color: rgba(201,168,76,0.15);
+      margin-bottom: 12px;
+    }
+
+    .empty-text {
+      font-size: 10px;
+      color: rgba(245,242,238,0.15);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    /* ── STATUS BAR ── */
+    .status-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(8,8,8,0.95);
+      border-top: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      background: #2ecc71;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #2ecc71;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .status-text {
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: rgba(245,242,238,0.25);
+      text-transform: uppercase;
+    }
+
+    .progress-bar {
+      width: 120px;
+      height: 2px;
+      background: rgba(201,168,76,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      background: var(--gold);
+      transition: width 0.4s ease;
+    }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(201,168,76,0.2), transparent);
+      margin: 28px 0;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 500px) {
+      .app { padding: 32px 16px 80px; }
+      .header-title { font-size: 36px; }
+      .stat-num { font-size: 24px; }
+      .add-row { flex-wrap: wrap; }
+      .add-input { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="header">
+    <div class="header-meta">
+      <div class="header-label">Brett Wambugu · Build Log</div>
+      <div class="header-date" id="currentDate"></div>
+    </div>
+    <div class="header-title">Ship it.<br/><em>Track it.</em></div>
+    <div class="header-sub">Every task. Every timestamp. Yours.</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-num" id="statTotal">0</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statDone">0</div>
+      <div class="stat-label">Done</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statPending">0</div>
+      <div class="stat-label">Pending</div>
+    </div>
+  </div>
+
+  <div class="add-section">
+    <div class="add-label">New Task</div>
+    <div class="add-row">
+      <input
+        class="add-input"
+        id="taskInput"
+        type="text"
+        placeholder="What did you build..."
+        maxlength="120"
+        autocomplete="off"
+      />
+      <select class="tag-select" id="tagSelect">
+        <option value="Build">Build</option>
+        <option value="Infra">Infra</option>
+        <option value="DevOps">DevOps</option>
+        <option value="Security">Security</option>
+        <option value="Design">Design</option>
+        <option value="Research">Research</option>
+        <option value="Fix">Fix</option>
+        <option value="Other">Other</option>
+      </select>
+      <button class="add-btn" onclick="addTask()">+ Add</button>
+    </div>
+  </div>
+
+  <div class="filters" id="filters">
+    <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+    <button class="filter-btn" onclick="setFilter('pending', this)">Pending</button>
+    <button class="filter-btn" onclick="setFilter('done', this)">Done</button>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <div class="tasks-section">
+    <div class="tasks-label">
+      <span>Tasks</span>
+      <button class="clear-done" onclick="clearDone()">Clear Done</button>
+    </div>
+    <div class="task-list" id="taskList"></div>
+  </div>
+
+</div>
+
+<div class="status-bar">
+  <div class="status-left">
+    <div class="status-dot"></div>
+    <div class="status-text">beemervault.duckdns.org</div>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+</div>
+
+<script>
+  // ── STATE ──
+  let tasks = JSON.parse(localStorage.getItem('brett_tasks') || '[]');
+  let currentFilter = 'all';
+
+  // ── SAVE ──
+  function save() {
+    localStorage.setItem('brett_tasks', JSON.stringify(tasks));
+  }
+
+  // ── DATE ──
+  function formatDate(iso) {
+    const d = new Date(iso);
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} · ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+
+  function updateHeaderDate() {
+    const now = new Date();
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    document.getElementById('currentDate').textContent =
+      `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  }
+
+  // ── ADD ──
+  function addTask() {
+    const input = document.getElementById('taskInput');
+    const tag = document.getElementById('tagSelect').value;
+    const text = input.value.trim();
+    if (!text) {
+      input.focus();
+      return;
+    }
+    tasks.unshift({
+      id: Date.now(),
+      text,
+      tag,
+      done: false,
+      createdAt: new Date().toISOString(),
+      doneAt: null
+    });
+    save();
+    input.value = '';
+    input.focus();
+    render();
+  }
+
+  // ── TOGGLE DONE ──
+  function toggleTask(id) {
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+    task.done = !task.done;
+    task.doneAt = task.done ? new Date().toISOString() : null;
+    save();
+    render();
+  }
+
+  // ── DELETE ──
+  function deleteTask(id) {
+    tasks = tasks.filter(t => t.id !== id);
+    save();
+    render();
+  }
+
+  // ── CLEAR DONE ──
+  function clearDone() {
+    tasks = tasks.filter(t => !t.done);
+    save();
+    render();
+  }
+
+  // ── FILTER ──
+  function setFilter(f, btn) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  }
+
+  // ── STATS ──
+  function updateStats() {
+    const total = tasks.length;
+    const done = tasks.filter(t => t.done).length;
+    const pending = total - done;
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statDone').textContent = done;
+    document.getElementById('statPending').textContent = pending;
+    const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  // ── RENDER ──
+  function render() {
+    updateStats();
+    const list = document.getElementById('taskList');
+
+    let filtered = tasks;
+    if (currentFilter === 'pending') filtered = tasks.filter(t => !t.done);
+    if (currentFilter === 'done') filtered = tasks.filter(t => t.done);
+
+    if (filtered.length === 0) {
+      list.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">—</div>
+          <div class="empty-text">${currentFilter === 'done' ? 'Nothing completed yet' : currentFilter === 'pending' ? 'All done. Ship more.' : 'No tasks yet. Add one above.'}</div>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = filtered.map(task => `
+      <div class="task-item ${task.done ? 'done' : ''}" id="task-${task.id}">
+        <div class="task-check" onclick="toggleTask(${task.id})">
+          <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+        </div>
+        <div class="task-body">
+          <div class="task-title">${escapeHtml(task.text)}</div>
+          <div class="task-meta">
+            <span class="task-tag">${task.tag}</span>
+            <span class="task-time">Added ${formatDate(task.createdAt)}</span>
+            ${task.doneAt ? `<span class="task-complete-time">✓ Done ${formatDate(task.doneAt)}</span>` : ''}
+          </div>
+        </div>
+        <button class="task-delete" onclick="deleteTask(${task.id})" title="Delete">×</button>
+      </div>
+    `).join('');
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── KEYBOARD SHORTCUT ──
+  document.getElementById('taskInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addTask();
+  });
+
+  // ── INIT ──
+  updateHeaderDate();
+  render();
+</script>
+</body>
+</html>

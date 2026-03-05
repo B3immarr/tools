@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Beemervault · Keys</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface2: #161616;
+      --white: #f0ede8;
+      --dim: rgba(240,237,232,0.38);
+      --dimmer: rgba(240,237,232,0.12);
+      --border: rgba(240,237,232,0.07);
+      --gold: #e8c547;
+      --blue: #7eb8f7;
+      --pink: #f77eb8;
+      --green: #7ef7b8;
+      --orange: #f7a07e;
+    }
+
+    /* ── CURSOR ── */
+    * { cursor: none !important; }
+
+    #cursor-dot {
+      position: fixed;
+      width: 6px; height: 6px;
+      background: var(--white);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    #cursor-ring {
+      position: fixed;
+      width: 32px; height: 32px;
+      border: 1px solid rgba(240,237,232,0.3);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99998;
+      transform: translate(-50%, -50%);
+      transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+
+    body:has(a:hover) #cursor-ring,
+    body:has(button:hover) #cursor-ring,
+    body:has(.pe:hover) #cursor-ring {
+      width: 48px; height: 48px;
+      border-color: var(--gold);
+      background: rgba(232,197,71,0.05);
+    }
+
+    /* ── GRAIN ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.032'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9000; opacity: 0.55;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── VIEW SYSTEM ── */
+    .view { display: none; min-height: 100vh; }
+    .view.active { display: block; }
+
+    /* ══════════════════════════════════════
+       LANDING
+    ══════════════════════════════════════ */
+    #view-landing {
+      display: none;
+      flex-direction: column;
+    }
+    #view-landing.active { display: flex; }
+
+    /* NAV */
+    .l-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      padding: 26px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.4s, border-color 0.4s;
+      border-bottom: 1px solid transparent;
+    }
+    .l-nav.stuck {
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(24px);
+      border-color: var(--border);
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px; font-weight: 800;
+      letter-spacing: -0.5px;
+      text-decoration: none; color: var(--white);
+    }
+    .logo .accent { color: var(--gold); }
+
+    .l-nav-links { display: flex; align-items: center; gap: 36px; }
+    .l-nav-link {
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--dim); text-decoration: none; transition: color 0.2s;
+    }
+    .l-nav-link:hover { color: var(--white); }
+
+    .l-nav-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--bg); background: var(--white);
+      padding: 10px 22px; border: none;
+      transition: opacity 0.2s;
+    }
+    .l-nav-btn:hover { opacity: 0.82; }
+
+    /* HERO */
+    .l-hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 140px 24px 80px;
+      position: relative;
+    }
+
+    .l-hero-glow {
+      position: absolute; top: 35%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px; height: 500px;
+      background: radial-gradient(ellipse, rgba(232,197,71,0.055) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .l-tag {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--dim); border: 1px solid var(--border);
+      padding: 8px 18px; margin-bottom: 60px;
+      animation: up 0.8s ease both;
+    }
+
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #4ade80; box-shadow: 0 0 8px #4ade80;
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.15} }
+
+    .l-headline {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(64px, 11vw, 112px);
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -4px;
+      margin-bottom: 36px;
+      animation: up 0.8s 0.07s ease both;
+    }
+
+    .l-headline .accent { color: var(--gold); }
+
+    .l-sub {
+      font-size: 13px; color: var(--dim);
+      line-height: 1.9; max-width: 420px;
+      margin: 0 auto 52px; letter-spacing: 0.3px;
+      animation: up 0.8s 0.14s ease both;
+    }
+
+    .l-actions {
+      display: flex; align-items: center; gap: 20px;
+      flex-wrap: wrap; justify-content: center;
+      animation: up 0.8s 0.21s ease both;
+    }
+
+    .btn-solid {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--bg); background: var(--white);
+      padding: 15px 30px; border: none;
+      display: inline-flex; align-items: center; gap: 10px;
+      transition: opacity 0.2s;
+    }
+    .btn-solid:hover { opacity: 0.82; }
+
+    .btn-ghost-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--dim); background: none; border: none;
+      transition: color 0.2s;
+    }
+    .btn-ghost-text:hover { color: var(--white); }
+
+    /* MARQUEE */
+    .marquee-wrap {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 15px 0; overflow: hidden;
+    }
+    .marquee-track {
+      display: flex; width: max-content;
+      animation: scroll 24s linear infinite;
+    }
+    .marquee-item {
+      font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--dimmer); padding: 0 32px;
+      border-right: 1px solid var(--border); white-space: nowrap;
+    }
+    @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* STATS */
+    .l-stats {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      max-width: 860px; margin: 80px auto; padding: 0 48px;
+      gap: 1px; background: var(--border);
+    }
+    .l-stat {
+      background: var(--bg); padding: 36px 32px;
+      transition: background 0.2s;
+    }
+    .l-stat:hover { background: var(--surface); }
+    .l-stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 40px; font-weight: 800;
+      color: var(--gold); letter-spacing: -2px;
+      margin-bottom: 6px; line-height: 1;
+    }
+    .l-stat-label { font-size: 9px; letter-spacing: 3px; color: var(--dimmer); text-transform: uppercase; }
+
+    /* FOOTER */
+    .l-footer {
+      border-top: 1px solid var(--border);
+      padding: 36px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: auto;
+    }
+    .l-footer-right { font-size: 9px; letter-spacing: 2px; color: var(--dimmer); text-transform: uppercase; }
+
+    /* ══════════════════════════════════════
+       LOGIN
+    ══════════════════════════════════════ */
+    #view-login {
+      display: none;
+      align-items: center; justify-content: center;
+      position: relative;
+    }
+    #view-login.active { display: flex; }
+
+    .login-glow {
+      position: absolute; top: 40%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(232,197,71,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .login-card {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 400px;
+      padding: 0 24px;
+      animation: up 0.7s ease both;
+    }
+
+    .login-brand {
+      text-align: center; margin-bottom: 56px;
+    }
+    .login-brand-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px; font-weight: 800;
+      letter-spacing: -1px; margin-bottom: 8px;
+    }
+    .login-brand-logo .accent { color: var(--gold); }
+    .login-brand-sub {
+      font-size: 9px; letter-spacing: 3px;
+      color: var(--dimmer); text-transform: uppercase;
+    }
+
+    /* key icon */
+    .login-icon {
+      width: 56px; height: 56px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin: 0 auto 24px;
+      background: var(--surface);
+    }
+
+    .login-field { margin-bottom: 14px; }
+    .login-label {
+      font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--dimmer); display: block; margin-bottom: 8px;
+    }
+    .login-input {
+      width: 100%;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--white); font-family: 'DM Mono', monospace;
+      font-size: 14px; padding: 15px 18px; outline: none;
+      transition: border-color 0.2s; letter-spacing: 1px;
+    }
+    .login-input:focus { border-color: rgba(232,197,71,0.35); }
+    .login-input::placeholder { color: var(--dimmer); }
+
+    .login-btn {
+      width: 100%; margin-top: 8px;
+      background: var(--gold); border: none;
+      color: var(--bg); font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+      padding: 17px; transition: opacity 0.2s;
+    }
+    .login-btn:hover { opacity: 0.85; }
+
+    .login-err {
+      font-size: 10px; color: #f87171;
+      letter-spacing: 1px; margin-top: 14px;
+      text-align: center; min-height: 16px;
+    }
+
+    .login-back {
+      display: block; text-align: center; margin-top: 28px;
+      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--dimmer); background: none; border: none;
+      transition: color 0.2s;
+    }
+    .login-back:hover { color: var(--dim); }
+
+    /* ══════════════════════════════════════
+       VAULT
+    ══════════════════════════════════════ */
+    #view-vault { display: none; }
+    #view-vault.active { display: block; }
+
+    .vault-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,10,0.95); backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .vault-nav-left { display: flex; align-items: center; gap: 24px; }
+
+    .vault-search {
+      display: flex; align-items: center; gap: 10px;
+      border: 1px solid var(--border); background: var(--surface);
+      padding: 10px 16px; width: 260px;
+      transition: border-color 0.2s;
+    }
+    .vault-search:focus-within { border-color: rgba(232,197,71,0.3); }
+    .vault-search-icon { color: var(--dimmer); font-size: 13px; flex-shrink: 0; }
+    .vault-search-input {
+      background: none; border: none; outline: none;
+      color: var(--white); font-family: 'DM Mono', monospace;
+      font-size: 11px; width: 100%; letter-spacing: 0.5px;
+    }
+    .vault-search-input::placeholder { color: var(--dimmer); }
+
+    .vault-nav-right { display: flex; align-items: center; gap: 16px; }
+
+    .vault-add-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+      background: var(--gold); color: var(--bg);
+      border: none; padding: 10px 18px;
+      display: flex; align-items: center; gap: 8px;
+      transition: opacity 0.2s;
+    }
+    .vault-add-btn:hover { opacity: 0.85; }
+
+    .vault-logout {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--dimmer); background: none;
+      border: 1px solid var(--border); padding: 10px 16px;
+      transition: all 0.2s;
+    }
+    .vault-logout:hover { border-color: var(--dim); color: var(--dim); }
+
+    /* VAULT BODY */
+    .vault-body { max-width: 900px; margin: 0 auto; padding: 40px 48px 100px; }
+
+    /* CATEGORY FILTERS */
+    .vault-filters {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .vf-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+      padding: 6px 14px; border: 1px solid var(--border);
+      background: transparent; color: var(--dimmer);
+      transition: all 0.2s;
+    }
+    .vf-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(232,197,71,0.06); }
+    .vf-btn:hover:not(.active) { border-color: var(--dim); color: var(--dim); }
+
+    /* VAULT HEADER */
+    .vault-header {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 16px;
+    }
+    .vault-count { font-size: 9px; letter-spacing: 3px; color: var(--dimmer); text-transform: uppercase; }
+
+    /* ENTRIES */
+    .vault-entries { display: flex; flex-direction: column; gap: 2px; }
+
+    .pe {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      background: var(--surface); border: 1px solid var(--border);
+      transition: background 0.2s, border-color 0.2s;
+      animation: up 0.3s ease both;
+    }
+    .pe:hover { background: var(--surface2); border-color: rgba(232,197,71,0.12); }
+
+    .pe-left { display: flex; align-items: center; gap: 16px; }
+
+    .pe-logo {
+      width: 36px; height: 36px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; flex-shrink: 0;
+    }
+    .pe-logo img { width: 20px; height: 20px; object-fit: contain; }
+    .pe-logo-fallback { font-size: 15px; }
+
+    .pe-info {}
+    .pe-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 600;
+      margin-bottom: 3px; letter-spacing: -0.3px;
+    }
+    .pe-user { font-size: 10px; color: var(--dim); letter-spacing: 0.5px; }
+
+    .pe-right { display: flex; align-items: center; gap: 14px; }
+
+    .pe-pw {
+      font-size: 12px; color: var(--dimmer);
+      letter-spacing: 3px; font-family: 'DM Mono', monospace;
+    }
+
+    .pe-tag {
+      font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
+      padding: 3px 9px; border: 1px solid var(--border); color: var(--dimmer);
+    }
+
+    .pe-reveal-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+      background: none; border: 1px solid var(--border);
+      color: var(--dimmer); padding: 7px 13px;
+      transition: all 0.2s;
+    }
+    .pe-reveal-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    .pe-del-btn {
+      background: none; border: none;
+      color: var(--dimmer); font-size: 16px;
+      transition: color 0.2s; line-height: 1;
+    }
+    .pe-del-btn:hover { color: #f87171; }
+
+    /* EMPTY */
+    .vault-empty {
+      text-align: center; padding: 80px 20px;
+      border: 1px dashed var(--border);
+    }
+    .vault-empty-icon {
+      font-family: 'Syne', sans-serif;
+      font-size: 56px; font-weight: 800;
+      color: rgba(232,197,71,0.1); margin-bottom: 16px;
+    }
+    .vault-empty-text {
+      font-size: 9px; letter-spacing: 3px;
+      color: var(--dimmer); text-transform: uppercase;
+    }
+
+    /* ══════════════════════════════════════
+       ADD MODAL
+    ══════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      width: 100%; max-width: 460px;
+      padding: 40px; position: relative;
+      animation: up 0.35s ease both;
+    }
+
+    .modal-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px; font-weight: 700;
+      letter-spacing: -0.5px; margin-bottom: 28px;
+    }
+    .modal-title .accent { color: var(--gold); }
+
+    .modal-close {
+      position: absolute; top: 20px; right: 20px;
+      background: none; border: none; color: var(--dimmer);
+      font-size: 20px; line-height: 1; transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--white); }
+
+    .modal-field { margin-bottom: 14px; }
+    .modal-label {
+      font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--dimmer); display: block; margin-bottom: 8px;
+    }
+    .modal-input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--white); font-family: 'DM Mono', monospace;
+      font-size: 13px; padding: 13px 16px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .modal-input:focus { border-color: rgba(232,197,71,0.35); }
+    .modal-input::placeholder { color: var(--dimmer); }
+
+    .modal-select {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--dim); font-family: 'DM Mono', monospace;
+      font-size: 12px; padding: 13px 16px; outline: none;
+      letter-spacing: 1px;
+    }
+    .modal-select option { background: var(--surface); }
+
+    .modal-btn {
+      width: 100%; margin-top: 6px;
+      background: var(--gold); border: none;
+      color: var(--bg); font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+      padding: 15px; transition: opacity 0.2s;
+    }
+    .modal-btn:hover { opacity: 0.85; }
+
+    /* ══════════════════════════════════════
+       PIN MODAL
+    ══════════════════════════════════════ */
+    #pin-modal .modal { max-width: 340px; text-align: center; }
+
+    .pin-site-logo {
+      width: 56px; height: 56px;
+      border: 1px solid var(--border); background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px; overflow: hidden;
+    }
+    .pin-site-logo img { width: 28px; height: 28px; object-fit: contain; }
+    .pin-site-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px; font-weight: 700; margin-bottom: 4px;
+    }
+    .pin-sub {
+      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--dimmer); margin-bottom: 28px;
+    }
+
+    /* PIN DOTS */
+    .pin-dots {
+      display: flex; align-items: center; justify-content: center;
+      gap: 14px; margin-bottom: 24px;
+    }
+    .pin-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      border: 1px solid var(--border);
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .pin-dot.filled { background: var(--gold); border-color: var(--gold); }
+
+    /* PIN NUMPAD */
+    .pin-pad {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 8px; margin-bottom: 20px;
+    }
+    .pin-key {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px; font-weight: 700;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--white); padding: 18px 10px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .pin-key:hover { background: var(--surface); border-color: rgba(232,197,71,0.2); }
+    .pin-key:active { background: rgba(232,197,71,0.1); }
+    .pin-key.pin-back { font-size: 14px; color: var(--dim); }
+    .pin-key.pin-zero { grid-column: 2; }
+
+    .pin-err {
+      font-size: 10px; color: #f87171;
+      letter-spacing: 1px; min-height: 14px; margin-bottom: 16px;
+    }
+
+    /* REVEALED PASSWORD */
+    .pw-revealed {
+      border: 1px solid rgba(232,197,71,0.2);
+      background: rgba(232,197,71,0.04);
+      padding: 16px; margin-bottom: 16px;
+      display: none;
+    }
+    .pw-revealed-label {
+      font-size: 8px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--dimmer); margin-bottom: 6px;
+    }
+    .pw-revealed-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 15px; color: var(--gold);
+      letter-spacing: 2px; word-break: break-all;
+    }
+    .pw-copy-btn {
+      width: 100%;
+      background: none; border: 1px solid var(--border);
+      color: var(--dim); font-family: 'DM Mono', monospace;
+      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+      padding: 12px; transition: all 0.2s;
+    }
+    .pw-copy-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes up {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* STATUS BAR */
+    .status-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+      background: rgba(10,10,10,0.96); border-top: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      padding: 10px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .sb-left { display: flex; align-items: center; gap: 10px; }
+    .sb-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 6px #4ade80; animation: blink 2s infinite; }
+    .sb-text { font-size: 9px; letter-spacing: 2px; color: var(--dimmer); text-transform: uppercase; }
+    .sb-right { font-size: 9px; letter-spacing: 2px; color: var(--dimmer); text-transform: uppercase; }
+
+    @media (max-width: 700px) {
+      .l-nav { padding: 20px 20px; }
+      .l-nav-links .l-nav-link { display: none; }
+      .l-headline { letter-spacing: -2px; }
+      .l-stats { padding: 0 20px; grid-template-columns: 1fr; }
+      .l-footer { padding: 28px 20px; flex-direction: column; gap: 12px; }
+      .vault-nav { padding: 14px 20px; }
+      .vault-search { width: 160px; }
+      .vault-body { padding: 28px 20px 100px; }
+      .pe { flex-wrap: wrap; gap: 10px; }
+      .pe-right { flex-wrap: wrap; }
+      .status-bar { padding: 10px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- STATUS BAR (global) -->
+<div class="status-bar">
+  <div class="sb-left">
+    <div class="sb-dot"></div>
+    <div class="sb-text">beemervault.duckdns.org</div>
+  </div>
+  <div class="sb-right" id="sb-right">Brett Wambugu · 2026</div>
+</div>
+
+<!-- ════════════ LANDING ════════════ -->
+<div class="view" id="view-landing">
+  <nav class="l-nav" id="l-nav">
+    <span class="logo">Beemer<span class="accent">keys</span></span>
+    <div class="l-nav-links">
+      <a href="#" class="l-nav-link" onclick="scrollToStats(event)">About</a>
+      <button class="l-nav-btn" onclick="showView('login')">Open vault →</button>
+    </div>
+  </nav>
+
+  <div class="l-hero">
+    <div class="l-hero-glow"></div>
+
+    <div class="l-tag">
+      <div class="live-dot"></div>
+      Brett's private vault · Nairobi, KE
+    </div>
+
+    <div class="l-headline">
+      Beemer<span class="accent">keys</span>
+    </div>
+
+    <p class="l-sub">
+      A private, self-hosted password manager built from scratch and running on my own server.
+      No subscriptions. No third parties. Zero trust required.
+    </p>
+
+    <div class="l-actions">
+      <button class="btn-solid" onclick="showView('login')">Open my vault →</button>
+      <button class="btn-ghost-text" onclick="scrollToStats(event)">How it works ↓</button>
+    </div>
+  </div>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item">Built by Brett Wambugu</span>
+      <span class="marquee-item">Nairobi Kenya</span>
+      <span class="marquee-item">Self Hosted</span>
+      <span class="marquee-item">Oracle Cloud VPS</span>
+      <span class="marquee-item">Docker + Flask + SQLite</span>
+      <span class="marquee-item">Zero third parties</span>
+      <span class="marquee-item">Built in one Sunday</span>
+      <span class="marquee-item">Cybersecurity journey</span>
+      <span class="marquee-item">Built by Brett Wambugu</span>
+      <span class="marquee-item">Nairobi Kenya</span>
+      <span class="marquee-item">Self Hosted</span>
+      <span class="marquee-item">Oracle Cloud VPS</span>
+      <span class="marquee-item">Docker + Flask + SQLite</span>
+      <span class="marquee-item">Zero third parties</span>
+      <span class="marquee-item">Built in one Sunday</span>
+      <span class="marquee-item">Cybersecurity journey</span>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="l-stats" id="l-stats">
+    <div class="l-stat">
+      <div class="l-stat-num">$0</div>
+      <div class="l-stat-label">Monthly cost</div>
+    </div>
+    <div class="l-stat">
+      <div class="l-stat-num">1</div>
+      <div class="l-stat-label">Day to build</div>
+    </div>
+    <div class="l-stat">
+      <div class="l-stat-num">∞</div>
+      <div class="l-stat-label">My data. My rules.</div>
+    </div>
+  </div>
+
+  <footer class="l-footer">
+    <span class="logo">Beemer<span class="accent">keys</span></span>
+    <div class="l-footer-right">Nairobi · Kenya · 2026</div>
+  </footer>
+</div>
+
+<!-- ════════════ LOGIN ════════════ -->
+<div class="view" id="view-login">
+  <div class="login-glow"></div>
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-icon">🗝️</div>
+      <div class="login-brand-logo">Beemer<span class="accent">keys</span></div>
+      <div class="login-brand-sub">Enter master credentials</div>
+    </div>
+
+    <div class="login-field">
+      <label class="login-label">Username</label>
+      <input class="login-input" id="login-user" type="text" placeholder="brett" autocomplete="off"/>
+    </div>
+    <div class="login-field">
+      <label class="login-label">Master Password</label>
+      <input class="login-input" id="login-pass" type="password" placeholder="••••••••••••"/>
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">Unlock vault →</button>
+    <div class="login-err" id="login-err"></div>
+    <button class="login-back" onclick="showView('landing')">← Back</button>
+  </div>
+</div>
+
+<!-- ════════════ VAULT ════════════ -->
+<div class="view" id="view-vault">
+  <div class="vault-nav">
+    <div class="vault-nav-left">
+      <span class="logo">Beemer<span class="accent">keys</span></span>
+      <div class="vault-search">
+        <span class="vault-search-icon">⌕</span>
+        <input class="vault-search-input" id="vault-search" type="text" placeholder="Search vault..." oninput="renderEntries()"/>
+      </div>
+    </div>
+    <div class="vault-nav-right">
+      <button class="vault-add-btn" onclick="openAddModal()">+ Add entry</button>
+      <button class="vault-logout" onclick="doLogout()">Lock →</button>
+    </div>
+  </div>
+
+  <div class="vault-body">
+    <div class="vault-filters" id="vault-filters"></div>
+    <div class="vault-header">
+      <div class="vault-count" id="vault-count"></div>
+    </div>
+    <div class="vault-entries" id="vault-entries"></div>
+  </div>
+</div>
+
+<!-- ════════════ ADD MODAL ════════════ -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAddModal()">×</button>
+    <div class="modal-title">New <span class="accent">entry</span></div>
+
+    <div class="modal-field">
+      <label class="modal-label">Site name</label>
+      <input class="modal-input" id="m-name" type="text" placeholder="GitHub"/>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Domain (for logo)</label>
+      <input class="modal-input" id="m-domain" type="text" placeholder="github.com"/>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Username / Email</label>
+      <input class="modal-input" id="m-user" type="text" placeholder="brett@wambugu.dev"/>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Password</label>
+      <input class="modal-input" id="m-pw" type="password" placeholder="••••••••"/>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Category</label>
+      <select class="modal-select" id="m-cat">
+        <option>Dev</option>
+        <option>Infra</option>
+        <option>Email</option>
+        <option>Social</option>
+        <option>Finance</option>
+        <option>Security</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <button class="modal-btn" onclick="addEntry()">Save entry →</button>
+  </div>
+</div>
+
+<!-- ════════════ PIN MODAL ════════════ -->
+<div class="modal-overlay" id="pin-modal">
+  <div class="modal" style="max-width:340px;text-align:center;">
+    <button class="modal-close" onclick="closePinModal()">×</button>
+
+    <div class="pin-site-logo" id="pin-logo"></div>
+    <div class="pin-site-name" id="pin-name"></div>
+    <div class="pin-sub">Enter PIN to reveal</div>
+
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
+    </div>
+
+    <div class="pin-err" id="pin-err"></div>
+
+    <!-- Revealed password (hidden until correct PIN) -->
+    <div class="pw-revealed" id="pw-revealed">
+      <div class="pw-revealed-label">Password</div>
+      <div class="pw-revealed-value" id="pw-revealed-value"></div>
+    </div>
+    <button class="pw-copy-btn" id="pw-copy-btn" style="display:none" onclick="copyPassword()">Copy password</button>
+
+    <!-- Numpad -->
+    <div class="pin-pad" id="pin-pad">
+      <button class="pin-key" onclick="pinInput('1')">1</button>
+      <button class="pin-key" onclick="pinInput('2')">2</button>
+      <button class="pin-key" onclick="pinInput('3')">3</button>
+      <button class="pin-key" onclick="pinInput('4')">4</button>
+      <button class="pin-key" onclick="pinInput('5')">5</button>
+      <button class="pin-key" onclick="pinInput('6')">6</button>
+      <button class="pin-key" onclick="pinInput('7')">7</button>
+      <button class="pin-key" onclick="pinInput('8')">8</button>
+      <button class="pin-key" onclick="pinInput('9')">9</button>
+      <button class="pin-key pin-zero" onclick="pinInput('0')">0</button>
+      <button class="pin-key pin-back" onclick="pinBack()">⌫</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ══════════════════════════════════════
+  // CURSOR
+  // ══════════════════════════════════════
+  const dot = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+  });
+
+  // ring follows with lag
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // ══════════════════════════════════════
+  // CONFIG — change these to your real creds & PIN
+  // ══════════════════════════════════════
+  const MASTER_USER = 'brett';
+  const MASTER_PASS = 'Beemervault2026';
+  const VAULT_PIN   = '2612'; // change to your PIN
+
+  // ══════════════════════════════════════
+  // VIEW SYSTEM
+  // ══════════════════════════════════════
+  function showView(name) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+    if (name === 'vault') {
+      renderFilters();
+      renderEntries();
+      updateStatusBar();
+    }
+    window.scrollTo(0, 0);
+  }
+
+  // ══════════════════════════════════════
+  // NAV SCROLL
+  // ══════════════════════════════════════
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('l-nav');
+    if (nav) nav.classList.toggle('stuck', window.scrollY > 30);
+  });
+
+  function scrollToStats(e) {
+    e.preventDefault();
+    document.getElementById('l-stats')?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ══════════════════════════════════════
+  // AUTH
+  // ══════════════════════════════════════
+  function doLogin() {
+    const u = document.getElementById('login-user').value.trim();
+    const p = document.getElementById('login-pass').value;
+    const err = document.getElementById('login-err');
+    err.textContent = '';
+
+    if (u === MASTER_USER && p === MASTER_PASS) {
+      sessionStorage.setItem('bv_auth', '1');
+      showView('vault');
+    } else {
+      err.textContent = 'Wrong credentials. Try again.';
+      document.getElementById('login-pass').value = '';
+    }
+  }
+
+  function doLogout() {
+    sessionStorage.removeItem('bv_auth');
+    document.getElementById('login-user').value = '';
+    document.getElementById('login-pass').value = '';
+    showView('login');
+  }
+
+  document.getElementById('login-pass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  // ══════════════════════════════════════
+  // DATA STORE
+  // ══════════════════════════════════════
+  function getEntries() {
+    return JSON.parse(localStorage.getItem('bv_entries') || '[]');
+  }
+
+  function saveEntries(entries) {
+    localStorage.setItem('bv_entries', JSON.stringify(entries));
+  }
+
+  // ══════════════════════════════════════
+  // FAVICON
+  // ══════════════════════════════════════
+  function faviconUrl(domain) {
+    if (!domain) return null;
+    const clean = domain.replace(/^https?:\/\//, '').split('/')[0];
+    return `https://www.google.com/s2/favicons?domain=${clean}&sz=64`;
+  }
+
+  function logoHtml(entry) {
+    if (entry.domain) {
+      return `<img src="${faviconUrl(entry.domain)}" onerror="this.style.display='none';this.nextSibling.style.display='block'" alt=""/>
+              <span class="pe-logo-fallback" style="display:none">🔒</span>`;
+    }
+    return `<span class="pe-logo-fallback">🔒</span>`;
+  }
+
+  // ══════════════════════════════════════
+  // CATEGORIES
+  // ══════════════════════════════════════
+  let activeFilter = 'All';
+
+  function renderFilters() {
+    const entries = getEntries();
+    const cats = ['All', ...new Set(entries.map(e => e.category).filter(Boolean))];
+    const wrap = document.getElementById('vault-filters');
+    wrap.innerHTML = cats.map(c => `
+      <button class="vf-btn ${c === activeFilter ? 'active' : ''}" onclick="setFilter('${c}')">${c}</button>
+    `).join('');
+  }
+
+  function setFilter(cat) {
+    activeFilter = cat;
+    renderFilters();
+    renderEntries();
+  }
+
+  // ══════════════════════════════════════
+  // RENDER ENTRIES
+  // ══════════════════════════════════════
+  function renderEntries() {
+    const search = document.getElementById('vault-search').value.toLowerCase();
+    let entries = getEntries();
+
+    if (activeFilter !== 'All') {
+      entries = entries.filter(e => e.category === activeFilter);
+    }
+
+    if (search) {
+      entries = entries.filter(e =>
+        e.name.toLowerCase().includes(search) ||
+        e.username.toLowerCase().includes(search) ||
+        (e.domain || '').toLowerCase().includes(search)
+      );
+    }
+
+    const countEl = document.getElementById('vault-count');
+    countEl.textContent = `${entries.length} entr${entries.length === 1 ? 'y' : 'ies'}`;
+
+    const list = document.getElementById('vault-entries');
+
+    if (entries.length === 0) {
+      list.innerHTML = `
+        <div class="vault-empty">
+          <div class="vault-empty-icon">🗝</div>
+          <div class="vault-empty-text">${search ? 'No results found' : 'Vault is empty — add your first entry'}</div>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = entries.map((e, i) => `
+      <div class="pe" style="animation-delay:${i * 0.04}s">
+        <div class="pe-left">
+          <div class="pe-logo">${logoHtml(e)}</div>
+          <div class="pe-info">
+            <div class="pe-name">${esc(e.name)}</div>
+            <div class="pe-user">${esc(e.username)}</div>
+          </div>
+        </div>
+        <div class="pe-right">
+          <div class="pe-pw">••••••••</div>
+          <div class="pe-tag">${esc(e.category || '')}</div>
+          <button class="pe-reveal-btn" onclick="openPinModal('${e.id}')">Reveal</button>
+          <button class="pe-del-btn" onclick="deleteEntry('${e.id}')">×</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function deleteEntry(id) {
+    let entries = getEntries().filter(e => e.id !== id);
+    saveEntries(entries);
+    renderFilters();
+    renderEntries();
+  }
+
+  // ══════════════════════════════════════
+  // ADD MODAL
+  // ══════════════════════════════════════
+  function openAddModal() {
+    document.getElementById('add-modal').classList.add('open');
+    document.getElementById('m-name').focus();
+  }
+
+  function closeAddModal() {
+    document.getElementById('add-modal').classList.remove('open');
+    ['m-name','m-domain','m-user','m-pw'].forEach(id => document.getElementById(id).value = '');
+  }
+
+  function addEntry() {
+    const name = document.getElementById('m-name').value.trim();
+    const domain = document.getElementById('m-domain').value.trim();
+    const username = document.getElementById('m-user').value.trim();
+    const password = document.getElementById('m-pw').value;
+    const category = document.getElementById('m-cat').value;
+
+    if (!name || !username || !password) return;
+
+    const entry = {
+      id: Date.now().toString(),
+      name, domain, username, password, category,
+      created: new Date().toISOString()
+    };
+
+    const entries = getEntries();
+    entries.unshift(entry);
+    saveEntries(entries);
+    closeAddModal();
+    renderFilters();
+    renderEntries();
+  }
+
+  // Close modal on overlay click
+  document.getElementById('add-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeAddModal();
+  });
+
+  // ══════════════════════════════════════
+  // PIN MODAL
+  // ══════════════════════════════════════
+  let pinValue = '';
+  let pinTargetEntry = null;
+
+  function openPinModal(id) {
+    const entries = getEntries();
+    pinTargetEntry = entries.find(e => e.id === id);
+    if (!pinTargetEntry) return;
+
+    pinValue = '';
+    updatePinDots();
+    document.getElementById('pin-err').textContent = '';
+    document.getElementById('pw-revealed').style.display = 'none';
+    document.getElementById('pw-copy-btn').style.display = 'none';
+    document.getElementById('pin-pad').style.display = 'grid';
+
+    // logo
+    const logoEl = document.getElementById('pin-logo');
+    logoEl.innerHTML = pinTargetEntry.domain
+      ? `<img src="${faviconUrl(pinTargetEntry.domain)}" width="28" height="28" style="object-fit:contain"/>`
+      : '🔒';
+
+    document.getElementById('pin-name').textContent = pinTargetEntry.name;
+    document.getElementById('pin-modal').classList.add('open');
+  }
+
+  function closePinModal() {
+    document.getElementById('pin-modal').classList.remove('open');
+    pinValue = '';
+    pinTargetEntry = null;
+    updatePinDots();
+  }
+
+  function pinInput(digit) {
+    if (pinValue.length >= 4) return;
+    pinValue += digit;
+    updatePinDots();
+    document.getElementById('pin-err').textContent = '';
+
+    if (pinValue.length === 4) {
+      setTimeout(checkPin, 120);
+    }
+  }
+
+  function pinBack() {
+    pinValue = pinValue.slice(0, -1);
+    updatePinDots();
+  }
+
+  function updatePinDots() {
+    for (let i = 0; i < 4; i++) {
+      document.getElementById('pd' + i).classList.toggle('filled', i < pinValue.length);
+    }
+  }
+
+  function checkPin() {
+    if (pinValue === VAULT_PIN) {
+      // correct
+      document.getElementById('pin-pad').style.display = 'none';
+      document.getElementById('pw-revealed-value').textContent = pinTargetEntry.password;
+      document.getElementById('pw-revealed').style.display = 'block';
+      document.getElementById('pw-copy-btn').style.display = 'block';
+    } else {
+      document.getElementById('pin-err').textContent = 'Wrong PIN. Try again.';
+      pinValue = '';
+      updatePinDots();
+      // shake the dots
+      const dotsEl = document.getElementById('pin-dots');
+      dotsEl.style.animation = 'none';
+      dotsEl.offsetHeight; // reflow
+      dotsEl.style.animation = 'shake 0.4s ease';
+    }
+  }
+
+  function copyPassword() {
+    if (!pinTargetEntry) return;
+    navigator.clipboard.writeText(pinTargetEntry.password).then(() => {
+      const btn = document.getElementById('pw-copy-btn');
+      const orig = btn.textContent;
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => btn.textContent = orig, 1800);
+    });
+  }
+
+  document.getElementById('pin-modal').addEventListener('click', function(e) {
+    if (e.target === this) closePinModal();
+  });
+
+  // keyboard PIN input
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('pin-modal').classList.contains('open')) return;
+    if (e.key >= '0' && e.key <= '9') pinInput(e.key);
+    if (e.key === 'Backspace') pinBack();
+    if (e.key === 'Escape') closePinModal();
+  });
+
+  // ══════════════════════════════════════
+  // STATUS BAR
+  // ══════════════════════════════════════
+  function updateStatusBar() {
+    const count = getEntries().length;
+    document.getElementById('sb-right').textContent = `${count} entr${count === 1 ? 'y' : 'ies'} · Brett Wambugu`;
+  }
+
+  // ══════════════════════════════════════
+  // UTILS
+  // ══════════════════════════════════════
+  function esc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // shake keyframe
+  const style = document.createElement('style');
+  style.textContent = `@keyframes shake {
+    0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)}
+  }`;
+  document.head.appendChild(style);
+
+  // ══════════════════════════════════════
+  // INIT
+  // ══════════════════════════════════════
+  // Check if already authed in session
+  if (sessionStorage.getItem('bv_auth') === '1') {
+    showView('vault');
+  } else {
+    showView('landing');
+  }
+</script>
+</body>
+</html>

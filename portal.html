@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="theme-color" content="#0a0a0a"/>
+  <title>Brett Wambugu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111;
+      --surface2: #171717;
+      --white: #f0ede8;
+      --dim: rgba(240,237,232,0.55);
+      --dimmer: rgba(240,237,232,0.28);
+      --border: rgba(240,237,232,0.08);
+      --border2: rgba(240,237,232,0.13);
+      --gold: #e8c547;
+      --green: #4ade80;
+    }
+
+    * { cursor: none !important; }
+    #cur-dot { position: fixed; width: 5px; height: 5px; background: var(--white); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%,-50%); }
+    #cur-ring { position: fixed; width: 28px; height: 28px; border: 1px solid rgba(240,237,232,0.2); border-radius: 50%; pointer-events: none; z-index: 99998; transform: translate(-50%,-50%); transition: width 0.2s, height 0.2s, border-color 0.2s; }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.032'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9000; opacity: 0.6;
+    }
+
+    body {
+      background: var(--bg); color: var(--white);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── NAV ── */
+    nav {
+      padding: 28px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,10,0.94); backdrop-filter: blur(20px);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px; font-weight: 800; letter-spacing: -0.3px;
+    }
+    .nav-logo .accent { color: var(--gold); }
+
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: blink 2s ease-in-out infinite; }
+    .nav-status { font-size: 12px; font-weight: 500; color: var(--dimmer); }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 100px 56px 72px;
+      max-width: 1100px; margin: 0 auto;
+      position: relative;
+    }
+
+    .hero-glow {
+      position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse, rgba(232,197,71,0.05) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 11px; font-weight: 600;
+      color: var(--dimmer); border: 1px solid var(--border);
+      padding: 7px 16px; margin-bottom: 40px;
+      animation: up 0.7s ease both;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-headline {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(52px, 8vw, 96px);
+      font-weight: 800; line-height: 0.93;
+      letter-spacing: -3px; margin-bottom: 28px;
+      animation: up 0.7s 0.06s ease both;
+    }
+    .hero-headline .accent { color: var(--gold); }
+
+    .hero-sub {
+      font-size: 16px; font-weight: 400; color: var(--dim);
+      line-height: 1.8; max-width: 500px;
+      animation: up 0.7s 0.12s ease both;
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-wrap {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0; overflow: hidden;
+      margin-bottom: 80px;
+    }
+    .marquee-track { display: flex; width: max-content; animation: scroll 28s linear infinite; }
+    .marquee-item { font-size: 10px; font-weight: 600; color: var(--dimmer); padding: 0 28px; border-right: 1px solid var(--border); white-space: nowrap; letter-spacing: 2px; text-transform: uppercase; }
+    @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ── GRID ── */
+    .grid-section { max-width: 1100px; margin: 0 auto; padding: 0 56px 120px; }
+
+    .grid-label {
+      font-size: 10px; font-weight: 700; color: var(--dimmer);
+      text-transform: uppercase; letter-spacing: 3px;
+      margin-bottom: 24px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: var(--white);
+      display: flex; flex-direction: column;
+      gap: 0;
+      transition: background 0.25s, border-color 0.25s, transform 0.2s;
+      animation: up 0.5s ease both;
+    }
+
+    .card:hover {
+      background: var(--surface2);
+      border-color: rgba(232,197,71,0.2);
+      transform: translateY(-2px);
+    }
+
+    /* hover glow */
+    .card::after {
+      content: ''; position: absolute;
+      inset: 0; opacity: 0;
+      background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(232,197,71,0.06), transparent 60%);
+      transition: opacity 0.3s; pointer-events: none;
+    }
+    .card:hover::after { opacity: 1; }
+
+    .card-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; margin-bottom: 20px;
+    }
+
+    .card-icon {
+      width: 44px; height: 44px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+
+    .card-live {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--green);
+    }
+    .card-live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 7px var(--green);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    .card-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px; font-weight: 800;
+      letter-spacing: -0.5px; margin-bottom: 10px;
+      line-height: 1.1;
+    }
+
+    .card-desc {
+      font-size: 13px; font-weight: 400;
+      color: var(--dim); line-height: 1.75;
+      margin-bottom: 28px; flex: 1;
+    }
+
+    .card-footer {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 18px; margin-top: auto;
+    }
+
+    .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .card-tag {
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      padding: 3px 9px; border: 1px solid var(--border);
+      color: var(--dimmer);
+    }
+
+    .card-arrow {
+      font-size: 16px; color: var(--dimmer);
+      transition: color 0.2s, transform 0.2s;
+    }
+    .card:hover .card-arrow { color: var(--gold); transform: translate(3px, -3px); }
+
+    /* ── FEATURED (large card) ── */
+    .card.featured {
+      grid-column: span 2;
+      flex-direction: row; gap: 40px; align-items: center;
+    }
+    .card.featured .card-content { flex: 1; }
+    .card.featured .card-visual {
+      width: 200px; height: 120px; flex-shrink: 0;
+      border: 1px solid var(--border); background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-left { font-size: 12px; font-weight: 500; color: var(--dimmer); }
+    .footer-right { font-size: 12px; font-style: italic; color: var(--dimmer); }
+
+    @keyframes up { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+    @media (max-width: 700px) {
+      nav { padding: 18px 20px; }
+      .hero { padding: 72px 20px 52px; }
+      .hero-headline { letter-spacing: -2px; }
+      .grid-section { padding: 0 20px 80px; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .card.featured { grid-column: span 1; flex-direction: column; }
+      .card.featured .card-visual { width: 100%; }
+      footer { padding: 24px 20px; flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Brett<span class="accent">.</span></div>
+  <div class="nav-right">
+    <div class="nav-dot"></div>
+    <div class="nav-status">All systems live · Nairobi, KE</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-tag">
+    <div class="nav-dot"></div>
+    Self-hosted · Built from scratch · Oracle Cloud
+  </div>
+  <div class="hero-headline">
+    Things I<br/>
+    <span class="accent">built.</span>
+  </div>
+  <p class="hero-sub">
+    A collection of web apps, tools, and experiments — all running on my own server. Cybersecurity student from Nairobi building real things.
+  </p>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">Brett Wambugu</span>
+    <span class="marquee-item">Nairobi Kenya</span>
+    <span class="marquee-item">Self Hosted</span>
+    <span class="marquee-item">Oracle Cloud VPS</span>
+    <span class="marquee-item">Docker</span>
+    <span class="marquee-item">Flask + SQLite</span>
+    <span class="marquee-item">Node.js</span>
+    <span class="marquee-item">Caddy + HTTPS</span>
+    <span class="marquee-item">Cybersecurity</span>
+    <span class="marquee-item">Brett Wambugu</span>
+    <span class="marquee-item">Nairobi Kenya</span>
+    <span class="marquee-item">Self Hosted</span>
+    <span class="marquee-item">Oracle Cloud VPS</span>
+    <span class="marquee-item">Docker</span>
+    <span class="marquee-item">Flask + SQLite</span>
+    <span class="marquee-item">Node.js</span>
+    <span class="marquee-item">Caddy + HTTPS</span>
+    <span class="marquee-item">Cybersecurity</span>
+  </div>
+</div>
+
+<!-- CARDS -->
+<div class="grid-section">
+
+  <div class="grid-label">Client projects</div>
+  <div class="cards-grid" style="margin-bottom: 48px;">
+
+    <a class="card featured" href="/timscars" id="card-timscars">
+      <div class="card-content">
+        <div class="card-top">
+          <div class="card-icon">🚗</div>
+          <div class="card-live"><div class="card-live-dot"></div>Live</div>
+        </div>
+        <div class="card-name">Tim's Cars</div>
+        <div class="card-desc">A full car dealership web application. Browse inventory, view listings, and manage stock — built and hosted entirely on my own infrastructure.</div>
+        <div class="card-footer">
+          <div class="card-tags">
+            <div class="card-tag">Node.js</div>
+            <div class="card-tag">Client work</div>
+            <div class="card-tag">Full stack</div>
+          </div>
+          <div class="card-arrow">↗</div>
+        </div>
+      </div>
+      <div class="card-visual">🚗</div>
+    </a>
+
+    <a class="card" href="/phones" id="card-phones">
+      <div class="card-top">
+        <div class="card-icon">📱</div>
+        <div class="card-live"><div class="card-live-dot"></div>Live</div>
+      </div>
+      <div class="card-name">Phones by Beamer</div>
+      <div class="card-desc">A phone listing and sales platform. Browse available devices, specs, and pricing — self-hosted with zero monthly infrastructure cost.</div>
+      <div class="card-footer">
+        <div class="card-tags">
+          <div class="card-tag">Node.js</div>
+          <div class="card-tag">E-commerce</div>
+        </div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="grid-label">Personal tools</div>
+  <div class="cards-grid">
+
+    <a class="card" href="/tasks" style="animation-delay:0.05s">
+      <div class="card-top">
+        <div class="card-icon">✓</div>
+        <div class="card-live"><div class="card-live-dot"></div>Live</div>
+      </div>
+      <div class="card-name">Task Manager</div>
+      <div class="card-desc">A full-stack task tracker with user auth, custom categories, and a SQLite database. Built with Flask from scratch — no templates, no shortcuts.</div>
+      <div class="card-footer">
+        <div class="card-tags">
+          <div class="card-tag">Flask</div>
+          <div class="card-tag">SQLite</div>
+          <div class="card-tag">Docker</div>
+        </div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+
+    <a class="card" href="/keys" style="animation-delay:0.1s">
+      <div class="card-top">
+        <div class="card-icon">🗝️</div>
+        <div class="card-live"><div class="card-live-dot"></div>Live</div>
+      </div>
+      <div class="card-name">Beemervault Keys</div>
+      <div class="card-desc">A private password manager with PIN-protected reveal, real favicon logos pulled live, category filters, and master password login. Data stays on my server.</div>
+      <div class="card-footer">
+        <div class="card-tags">
+          <div class="card-tag">Security</div>
+          <div class="card-tag">Private</div>
+        </div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+
+    <a class="card" href="/habits" style="animation-delay:0.15s">
+      <div class="card-top">
+        <div class="card-icon">📅</div>
+        <div class="card-live"><div class="card-live-dot"></div>Live</div>
+      </div>
+      <div class="card-name">Habit Tracker</div>
+      <div class="card-desc">Year, week, and day views of your habits. Calendar boxes turn green when you nail a day, red when you miss it. Streak tracking, progress rings, all synced.</div>
+      <div class="card-footer">
+        <div class="card-tags">
+          <div class="card-tag">Productivity</div>
+          <div class="card-tag">Calendar</div>
+        </div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+
+    <a class="card" href="/countdown" style="animation-delay:0.2s">
+      <div class="card-top">
+        <div class="card-icon">⏱</div>
+        <div class="card-live"><div class="card-live-dot"></div>Live</div>
+      </div>
+      <div class="card-name">Countdown Timer</div>
+      <div class="card-desc">Input any number of seconds. Instantly converts to hours and minutes. Animated progress ring, urgency mode at 10 seconds, works reliably in the background on mobile.</div>
+      <div class="card-footer">
+        <div class="card-tags">
+          <div class="card-tag">Utility</div>
+          <div class="card-tag">Mobile-first</div>
+        </div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+
+    <a class="card" href="/" style="animation-delay:0.25s">
+      <div class="card-top">
+        <div class="card-icon">🔐</div>
+        <div class="card-live"><div class="card-live-dot"></div>Live</div>
+      </div>
+      <div class="card-name">Beemervault</div>
+      <div class="card-desc">Self-hosted Vaultwarden instance — an open-source Bitwarden-compatible password server running in Docker with full HTTPS and browser extension sync.</div>
+      <div class="card-footer">
+        <div class="card-tags">
+          <div class="card-tag">Docker</div>
+          <div class="card-tag">Self-hosted</div>
+          <div class="card-tag">Security</div>
+        </div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">Brett Wambugu · Nairobi, Kenya · 2026</div>
+  <div class="footer-right">Everything here runs on a $0/month server.</div>
+</footer>
+
+<script>
+  // cursor
+  const dot = document.getElementById('cur-dot');
+  const ring = document.getElementById('cur-ring');
+  let mx=0,my=0,rx=0,ry=0;
+
+  document.addEventListener('mousemove', e => {
+    mx=e.clientX; my=e.clientY;
+    dot.style.left=mx+'px'; dot.style.top=my+'px';
+  });
+
+  document.addEventListener('mouseover', e => {
+    if (e.target.closest('a,button')) {
+      ring.style.width='44px'; ring.style.height='44px';
+      ring.style.borderColor='rgba(232,197,71,0.5)';
+    } else {
+      ring.style.width='28px'; ring.style.height='28px';
+      ring.style.borderColor='rgba(240,237,232,0.2)';
+    }
+  });
+
+  (function loop() {
+    rx+=(mx-rx)*0.1; ry+=(my-ry)*0.1;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(loop);
+  })();
+
+  // card glow follows mouse
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width * 100).toFixed(1);
+      const y = ((e.clientY - r.top) / r.height * 100).toFixed(1);
+      card.style.setProperty('--mx', x + '%');
+      card.style.setProperty('--my', y + '%');
+    });
+  });
+
+  // stagger card animations
+  document.querySelectorAll('.card').forEach((card, i) => {
+    card.style.animationDelay = (i * 0.07) + 's';
+  });
+</script>
+</body>
+</html>

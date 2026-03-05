@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="theme-color" content="#f5f4f0"/>
+  <title>Countdown</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f4f0;
+      --surface: #eeecea;
+      --surface2: #e6e4e0;
+      --black: #0f0f0f;
+      --mid: rgba(15,15,15,0.5);
+      --dim: rgba(15,15,15,0.35);
+      --border: rgba(15,15,15,0.1);
+      --red: #e8443a;
+    }
+
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9000; opacity: 0.7;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--black);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── NAV ── */
+    nav {
+      padding: 20px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px; font-weight: 800; letter-spacing: -0.3px;
+    }
+    .nav-label { font-size: 13px; font-weight: 500; color: var(--dim); }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 36px 24px 40px;
+    }
+
+    /* ══════════════════
+       INPUT STATE
+    ══════════════════ */
+    .input-state { width: 100%; max-width: 480px; animation: fadeUp 0.6s ease both; }
+
+    .input-eyebrow {
+      font-size: 11px; font-weight: 600; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--dim);
+      text-align: center; margin-bottom: 36px;
+    }
+
+    /* TITLE FIELD */
+    .title-field { margin-bottom: 28px; }
+
+    .field-label {
+      font-size: 12px; font-weight: 600; color: var(--dim);
+      display: block; margin-bottom: 8px; letter-spacing: 0.3px;
+    }
+
+    .title-input {
+      width: 100%;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--black); font-family: 'Inter', sans-serif;
+      font-size: 18px; font-weight: 500;
+      padding: 16px 20px; outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none; border-radius: 0;
+    }
+    .title-input:focus { border-color: rgba(15,15,15,0.35); }
+    .title-input::placeholder { color: rgba(15,15,15,0.2); font-style: italic; }
+
+    /* SECONDS INPUT */
+    .seconds-field { margin-bottom: 10px; }
+
+    .big-input {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(72px, 20vw, 130px);
+      font-weight: 800; line-height: 1; letter-spacing: -4px;
+      color: var(--black); background: transparent;
+      border: none; outline: none;
+      width: 100%; text-align: center;
+      caret-color: var(--black);
+      -webkit-appearance: none; border-radius: 0;
+    }
+    .big-input::placeholder { color: rgba(15,15,15,0.1); }
+    .big-input::-webkit-outer-spin-button,
+    .big-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .big-input[type=number] { -moz-appearance: textfield; }
+
+    .input-unit {
+      font-size: 14px; font-weight: 500; color: var(--dim);
+      text-align: center; margin-bottom: 28px; letter-spacing: 0.5px;
+    }
+
+    /* CONVERSION PREVIEW */
+    .conversion-preview {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 18px 24px; margin-bottom: 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      min-height: 72px; gap: 8px;
+    }
+    .conv-item { text-align: center; flex: 1; }
+    .conv-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 26px; font-weight: 800; letter-spacing: -1px;
+      line-height: 1; margin-bottom: 4px;
+    }
+    .conv-label {
+      font-size: 10px; font-weight: 600; color: var(--dim);
+      text-transform: uppercase; letter-spacing: 2px;
+    }
+    .conv-divider { width: 1px; height: 32px; background: var(--border); flex-shrink: 0; }
+    .conv-empty { font-size: 13px; font-style: italic; color: var(--dim); width: 100%; text-align: center; }
+
+    /* START BTN */
+    .start-btn {
+      width: 100%; background: var(--black); color: var(--bg);
+      border: none; font-family: 'Inter', sans-serif;
+      font-size: 16px; font-weight: 600;
+      padding: 18px 32px; letter-spacing: 0.2px;
+      transition: opacity 0.2s;
+      -webkit-appearance: none; border-radius: 0;
+    }
+    .start-btn:hover { opacity: 0.87; }
+    .start-btn:active { opacity: 0.75; }
+    .start-btn:disabled { opacity: 0.25; }
+
+    /* ══════════════════
+       TIMER STATE
+    ══════════════════ */
+    .timer-state {
+      width: 100%; max-width: 520px;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    /* TIMER TITLE + INTENTION */
+    .timer-heading { margin-bottom: 36px; }
+    .timer-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px; font-weight: 800;
+      letter-spacing: -0.5px; line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .timer-intention {
+      font-size: 14px; font-weight: 400; font-style: italic;
+      color: var(--mid);
+    }
+
+    /* RING */
+    .ring-wrap {
+      position: relative; width: 240px; height: 240px;
+      margin-bottom: 36px;
+    }
+    .ring-svg { transform: rotate(-90deg); }
+    .ring-bg { fill: none; stroke: var(--surface2); stroke-width: 3; }
+    .ring-progress {
+      fill: none; stroke: var(--black); stroke-width: 3;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s linear, stroke 0.5s;
+    }
+    .ring-progress.urgent { stroke: var(--red); }
+    .ring-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .ring-time {
+      font-family: 'Syne', sans-serif;
+      font-size: 56px; font-weight: 800;
+      letter-spacing: -2px; line-height: 1;
+      transition: color 0.5s;
+    }
+    .ring-time.urgent { color: var(--red); animation: urgentPulse 1s ease-in-out infinite; }
+    .ring-label { font-size: 11px; font-weight: 600; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; margin-top: 6px; }
+
+    /* BREAKDOWN */
+    .timer-breakdown {
+      display: flex; width: 100%;
+      background: var(--surface); border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .tb-item { flex: 1; padding: 18px 8px; text-align: center; }
+    .tb-item + .tb-item { border-left: 1px solid var(--border); }
+    .tb-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px; font-weight: 800; letter-spacing: -1px;
+      line-height: 1; margin-bottom: 5px; transition: color 0.3s;
+    }
+    .tb-num.urgent { color: var(--red); }
+    .tb-label { font-size: 10px; font-weight: 600; color: var(--dim); text-transform: uppercase; letter-spacing: 2px; }
+
+    .timer-meta {
+      font-size: 13px; font-weight: 400; font-style: italic;
+      color: var(--dim); margin-bottom: 28px; line-height: 1.6;
+      text-align: center;
+    }
+
+    /* CONTROLS */
+    .timer-controls { display: flex; gap: 10px; width: 100%; }
+    .ctrl-btn {
+      flex: 1; font-family: 'Inter', sans-serif;
+      font-size: 15px; font-weight: 600;
+      padding: 16px; border: 1px solid var(--border);
+      background: var(--surface); color: var(--black);
+      transition: background 0.2s;
+      -webkit-appearance: none; border-radius: 0;
+    }
+    .ctrl-btn:active { background: var(--surface2); }
+    .ctrl-btn.primary { background: var(--black); color: var(--bg); border-color: var(--black); }
+    .ctrl-btn.primary:active { opacity: 0.8; }
+
+    /* ══════════════════
+       DONE STATE
+    ══════════════════ */
+    .done-state {
+      width: 100%; max-width: 480px;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      animation: fadeUp 0.5s ease both;
+    }
+    .done-icon { font-size: 56px; margin-bottom: 20px; animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
+    .done-timer-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--dim);
+      margin-bottom: 10px;
+    }
+    .done-headline {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(40px, 10vw, 68px); font-weight: 800;
+      letter-spacing: -2px; line-height: 1; margin-bottom: 16px;
+    }
+    .done-sub {
+      font-size: 16px; font-weight: 400; font-style: italic;
+      color: var(--mid); margin-bottom: 48px; line-height: 1.7;
+      max-width: 340px;
+    }
+    .done-btn {
+      font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600;
+      background: var(--black); color: var(--bg); border: none;
+      padding: 16px 40px; transition: opacity 0.2s;
+      -webkit-appearance: none; border-radius: 0;
+    }
+    .done-btn:active { opacity: 0.75; }
+
+    /* FOOTER */
+    footer {
+      padding: 16px 32px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .footer-left { font-size: 12px; font-style: italic; color: var(--dim); }
+    .footer-right { font-size: 12px; font-weight: 500; color: var(--dim); }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes pop { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
+    @keyframes urgentPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+    @media (max-width: 480px) {
+      nav { padding: 18px 20px; }
+      main { padding: 28px 20px 32px; }
+      footer { padding: 14px 20px; }
+      .ring-wrap { width: 200px; height: 200px; }
+      .ring-time { font-size: 46px; }
+      .timer-title { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Countdown</div>
+  <div class="nav-label" id="nav-label">by Brett</div>
+</nav>
+
+<main>
+
+  <!-- INPUT STATE -->
+  <div class="input-state" id="state-input">
+    <div class="input-eyebrow">New timer</div>
+
+    <div class="title-field">
+      <label class="field-label">What is this timer for?</label>
+      <input
+        class="title-input"
+        id="timer-title-input"
+        type="text"
+        placeholder="e.g. Deep work session"
+        maxlength="60"
+      />
+    </div>
+
+    <div class="seconds-field">
+      <label class="field-label">Duration in seconds</label>
+      <input
+        class="big-input"
+        id="seconds-input"
+        type="number"
+        placeholder="0"
+        min="1" max="359999"
+        oninput="onInputChange()"
+        onkeydown="onInputKey(event)"
+        inputmode="numeric"
+      />
+    </div>
+
+    <div class="input-unit">seconds</div>
+
+    <div class="conversion-preview" id="conversion-preview">
+      <div class="conv-empty">Enter seconds to see the breakdown</div>
+    </div>
+
+    <button class="start-btn" id="start-btn" onclick="startTimer()" disabled>
+      Start timer →
+    </button>
+  </div>
+
+  <!-- TIMER STATE -->
+  <div class="timer-state" id="state-timer" style="display:none">
+
+    <div class="timer-heading">
+      <div class="timer-title" id="display-title"></div>
+      <div class="timer-intention" id="display-intention"></div>
+    </div>
+
+    <div class="ring-wrap">
+      <svg class="ring-svg" width="240" height="240" viewBox="0 0 240 240">
+        <circle class="ring-bg" cx="120" cy="120" r="108"/>
+        <circle class="ring-progress" id="ring-progress"
+          cx="120" cy="120" r="108"
+          stroke-dasharray="678.58"
+          stroke-dashoffset="0"/>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-time" id="ring-time">0</div>
+        <div class="ring-label">seconds left</div>
+      </div>
+    </div>
+
+    <div class="timer-breakdown">
+      <div class="tb-item"><div class="tb-num" id="tb-h">00</div><div class="tb-label">Hours</div></div>
+      <div class="tb-item"><div class="tb-num" id="tb-m">00</div><div class="tb-label">Minutes</div></div>
+      <div class="tb-item"><div class="tb-num" id="tb-s">00</div><div class="tb-label">Seconds</div></div>
+    </div>
+
+    <div class="timer-meta" id="timer-meta"></div>
+
+    <div class="timer-controls">
+      <button class="ctrl-btn" onclick="resetTimer()">Reset</button>
+      <button class="ctrl-btn primary" id="pause-btn" onclick="togglePause()">Pause</button>
+    </div>
+  </div>
+
+  <!-- DONE STATE -->
+  <div class="done-state" id="state-done" style="display:none">
+    <div class="done-icon">✓</div>
+    <div class="done-timer-title" id="done-timer-title"></div>
+    <div class="done-headline">Time's up.</div>
+    <div class="done-sub" id="done-sub"></div>
+    <button class="done-btn" onclick="resetTimer()">Set another →</button>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-left">Input seconds. Watch time dissolve.</div>
+  <div class="footer-right" id="footer-right"></div>
+</footer>
+
+<script>
+  const CIRCUMFERENCE = 2 * Math.PI * 108;
+
+  let totalSeconds = 0;
+  let remaining = 0;
+  let interval = null;
+  let paused = false;
+  let timerTitle = '';
+
+  // INPUT
+  function onInputChange() {
+    const val = parseInt(document.getElementById('seconds-input').value) || 0;
+    updatePreview(val);
+    document.getElementById('start-btn').disabled = val < 1 || val > 359999;
+  }
+
+  function onInputKey(e) {
+    if (e.key === 'Enter') {
+      document.getElementById('seconds-input').blur();
+      const val = parseInt(document.getElementById('seconds-input').value) || 0;
+      if (val >= 1) startTimer();
+    }
+  }
+
+  function updatePreview(secs) {
+    const el = document.getElementById('conversion-preview');
+    if (!secs || secs < 1) {
+      el.innerHTML = '<div class="conv-empty">Enter seconds to see the breakdown</div>';
+      return;
+    }
+    const { h, m, s } = breakdown(secs);
+    el.innerHTML = `
+      <div class="conv-item"><div class="conv-num">${pad(h)}</div><div class="conv-label">Hours</div></div>
+      <div class="conv-divider"></div>
+      <div class="conv-item"><div class="conv-num">${pad(m)}</div><div class="conv-label">Minutes</div></div>
+      <div class="conv-divider"></div>
+      <div class="conv-item"><div class="conv-num">${pad(s)}</div><div class="conv-label">Seconds</div></div>
+    `;
+  }
+
+  // TIMER
+  function startTimer() {
+    const val = parseInt(document.getElementById('seconds-input').value) || 0;
+    if (val < 1) return;
+    timerTitle = document.getElementById('timer-title-input').value.trim();
+    totalSeconds = val;
+    remaining = val;
+    paused = false;
+
+    // set heading
+    document.getElementById('display-title').textContent = timerTitle || 'Countdown';
+    const { h, m, s } = breakdown(totalSeconds);
+    const parts = [];
+    if (h) parts.push(`${h}h`);
+    if (m) parts.push(`${m}m`);
+    if (s || !parts.length) parts.push(`${s}s`);
+    document.getElementById('display-intention').textContent = `${totalSeconds.toLocaleString()} seconds · ${parts.join(' ')}`;
+
+    showState('timer');
+    updateDisplay();
+    runInterval();
+  }
+
+  function runInterval() {
+    clearInterval(interval);
+    interval = setInterval(() => {
+      if (paused) return;
+      remaining--;
+      updateDisplay();
+      if (remaining <= 0) { clearInterval(interval); showDone(); }
+    }, 1000);
+  }
+
+  function togglePause() {
+    paused = !paused;
+    document.getElementById('pause-btn').textContent = paused ? 'Resume' : 'Pause';
+  }
+
+  function resetTimer() {
+    clearInterval(interval);
+    paused = false; remaining = 0; totalSeconds = 0; timerTitle = '';
+    document.getElementById('seconds-input').value = '';
+    document.getElementById('timer-title-input').value = '';
+    document.getElementById('start-btn').disabled = true;
+    document.getElementById('conversion-preview').innerHTML = '<div class="conv-empty">Enter seconds to see the breakdown</div>';
+    document.getElementById('footer-right').textContent = '';
+    document.getElementById('nav-label').textContent = 'by Brett';
+    showState('input');
+  }
+
+  function updateDisplay() {
+    const { h, m, s } = breakdown(remaining);
+    const urgent = remaining <= 10 && remaining > 0;
+    const pct = totalSeconds > 0 ? remaining / totalSeconds : 0;
+    const offset = CIRCUMFERENCE * (1 - pct);
+
+    // ring
+    const ring = document.getElementById('ring-progress');
+    ring.style.strokeDashoffset = offset;
+    ring.classList.toggle('urgent', urgent);
+
+    // center
+    const rt = document.getElementById('ring-time');
+    rt.textContent = remaining;
+    rt.classList.toggle('urgent', urgent);
+
+    // breakdown
+    ['h','m','s'].forEach(k => {
+      const el = document.getElementById('tb-' + k);
+      el.classList.toggle('urgent', urgent);
+    });
+    document.getElementById('tb-h').textContent = pad(h);
+    document.getElementById('tb-m').textContent = pad(m);
+    document.getElementById('tb-s').textContent = pad(s);
+
+    // meta
+    const orig = breakdown(totalSeconds);
+    const origParts = [];
+    if (orig.h) origParts.push(`${orig.h}h`);
+    if (orig.m) origParts.push(`${orig.m}m`);
+    if (orig.s || !origParts.length) origParts.push(`${orig.s}s`);
+    document.getElementById('timer-meta').textContent =
+      `${totalSeconds.toLocaleString()} seconds total · ${origParts.join(' ')}`;
+
+    // footer + nav
+    const pctNum = Math.round(pct * 100);
+    document.getElementById('footer-right').textContent = `${pctNum}% remaining`;
+    document.getElementById('nav-label').textContent = timerTitle || 'running';
+  }
+
+  function showDone() {
+    const title = timerTitle || 'Timer';
+    document.getElementById('done-timer-title').textContent = title;
+
+    const { h, m, s } = breakdown(totalSeconds);
+    const parts = [];
+    if (h) parts.push(`${h} hour${h !== 1 ? 's' : ''}`);
+    if (m) parts.push(`${m} minute${m !== 1 ? 's' : ''}`);
+    if (s || !parts.length) parts.push(`${s} second${s !== 1 ? 's' : ''}`);
+    document.getElementById('done-sub').textContent =
+      `${totalSeconds.toLocaleString()} seconds. That's ${parts.join(', ')}. Done.`;
+
+    document.getElementById('footer-right').textContent = 'Complete';
+    document.getElementById('nav-label').textContent = 'done';
+    showState('done');
+  }
+
+  // STATE
+  function showState(name) {
+    document.getElementById('state-input').style.display = name === 'input' ? 'block' : 'none';
+    document.getElementById('state-timer').style.display = name === 'timer' ? 'flex' : 'none';
+    document.getElementById('state-done').style.display = name === 'done' ? 'flex' : 'none';
+    if (name === 'timer') document.getElementById('pause-btn').textContent = 'Pause';
+  }
+
+  // UTILS
+  function breakdown(secs) {
+    return { h: Math.floor(secs/3600), m: Math.floor((secs%3600)/60), s: secs%60 };
+  }
+  function pad(n) { return String(n).padStart(2,'0'); }
+</script>
+</body>
+</html>
