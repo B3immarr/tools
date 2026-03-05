@@ -48,192 +48,78 @@
       position: sticky; top: 0; z-index: 100;
       background: rgba(10,10,10,0.94); backdrop-filter: blur(20px);
     }
-
-    .nav-logo {
-      font-family: 'Syne', sans-serif;
-      font-size: 17px; font-weight: 800; letter-spacing: -0.3px;
-    }
+    .nav-logo { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800; letter-spacing: -0.3px; }
     .nav-logo .accent { color: var(--gold); }
-
     .nav-right { display: flex; align-items: center; gap: 10px; }
-    .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: blink 2s ease-in-out infinite; }
+    .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: blink 2s ease-in-out infinite; flex-shrink: 0; }
     .nav-status { font-size: 12px; font-weight: 500; color: var(--dimmer); }
-
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
     /* ── HERO ── */
-    .hero {
-      padding: 100px 56px 72px;
-      max-width: 1100px; margin: 0 auto;
-      position: relative;
-    }
-
-    .hero-glow {
-      position: absolute; top: 0; left: 50%;
-      transform: translateX(-50%);
-      width: 700px; height: 400px;
-      background: radial-gradient(ellipse, rgba(232,197,71,0.05) 0%, transparent 65%);
-      pointer-events: none;
-    }
-
-    .hero-tag {
-      display: inline-flex; align-items: center; gap: 10px;
-      font-size: 11px; font-weight: 600;
-      color: var(--dimmer); border: 1px solid var(--border);
-      padding: 7px 16px; margin-bottom: 40px;
-      animation: up 0.7s ease both;
-      letter-spacing: 0.5px;
-    }
-
-    .hero-headline {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(52px, 8vw, 96px);
-      font-weight: 800; line-height: 0.93;
-      letter-spacing: -3px; margin-bottom: 28px;
-      animation: up 0.7s 0.06s ease both;
-    }
+    .hero { padding: 100px 56px 72px; max-width: 1100px; margin: 0 auto; position: relative; }
+    .hero-glow { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 700px; height: 400px; background: radial-gradient(ellipse, rgba(232,197,71,0.05) 0%, transparent 65%); pointer-events: none; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 600; color: var(--dimmer); border: 1px solid var(--border); padding: 7px 16px; margin-bottom: 40px; animation: up 0.7s ease both; letter-spacing: 0.5px; }
+    .hero-headline { font-family: 'Syne', sans-serif; font-size: clamp(52px, 8vw, 96px); font-weight: 800; line-height: 0.93; letter-spacing: -3px; margin-bottom: 28px; animation: up 0.7s 0.06s ease both; }
     .hero-headline .accent { color: var(--gold); }
-
-    .hero-sub {
-      font-size: 16px; font-weight: 400; color: var(--dim);
-      line-height: 1.8; max-width: 500px;
-      animation: up 0.7s 0.12s ease both;
-    }
+    .hero-sub { font-size: 16px; font-weight: 400; color: var(--dim); line-height: 1.8; max-width: 500px; animation: up 0.7s 0.12s ease both; }
 
     /* ── MARQUEE ── */
-    .marquee-wrap {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 0; overflow: hidden;
-      margin-bottom: 80px;
-    }
+    .marquee-wrap { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 14px 0; overflow: hidden; margin-bottom: 80px; }
     .marquee-track { display: flex; width: max-content; animation: scroll 28s linear infinite; }
     .marquee-item { font-size: 10px; font-weight: 600; color: var(--dimmer); padding: 0 28px; border-right: 1px solid var(--border); white-space: nowrap; letter-spacing: 2px; text-transform: uppercase; }
     @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
     /* ── GRID ── */
     .grid-section { max-width: 1100px; margin: 0 auto; padding: 0 56px 120px; }
-
-    .grid-label {
-      font-size: 10px; font-weight: 700; color: var(--dimmer);
-      text-transform: uppercase; letter-spacing: 3px;
-      margin-bottom: 24px;
-    }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2px;
-    }
+    .grid-label { font-size: 10px; font-weight: 700; color: var(--dimmer); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 24px; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2px; }
 
     /* ── CARD ── */
     .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 32px;
-      position: relative;
-      overflow: hidden;
-      text-decoration: none;
-      color: var(--white);
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 32px; position: relative; overflow: hidden;
+      text-decoration: none; color: var(--white);
       display: flex; flex-direction: column;
-      gap: 0;
       transition: background 0.25s, border-color 0.25s, transform 0.2s;
       animation: up 0.5s ease both;
     }
-
-    .card:hover {
-      background: var(--surface2);
-      border-color: rgba(232,197,71,0.2);
-      transform: translateY(-2px);
-    }
-
-    /* hover glow */
-    .card::after {
-      content: ''; position: absolute;
-      inset: 0; opacity: 0;
-      background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(232,197,71,0.06), transparent 60%);
-      transition: opacity 0.3s; pointer-events: none;
-    }
+    .card:hover { background: var(--surface2); border-color: rgba(232,197,71,0.2); transform: translateY(-2px); }
+    .card::after { content: ''; position: absolute; inset: 0; opacity: 0; background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(232,197,71,0.06), transparent 60%); transition: opacity 0.3s; pointer-events: none; }
     .card:hover::after { opacity: 1; }
 
-    .card-top {
-      display: flex; align-items: flex-start;
-      justify-content: space-between; margin-bottom: 20px;
-    }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
 
     .card-icon {
       width: 44px; height: 44px;
       border: 1px solid var(--border);
       background: var(--surface2);
       display: flex; align-items: center; justify-content: center;
-      font-size: 20px; flex-shrink: 0;
+      flex-shrink: 0;
     }
+    .card-icon svg { width: 20px; height: 20px; stroke: var(--dimmer); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.2s; }
+    .card:hover .card-icon svg { stroke: var(--gold); }
 
-    .card-live {
-      display: flex; align-items: center; gap: 7px;
-      font-size: 10px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 1.5px;
-      color: var(--green);
-    }
-    .card-live-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--green); box-shadow: 0 0 7px var(--green);
-      animation: blink 2s ease-in-out infinite;
-    }
+    .card-live { display: flex; align-items: center; gap: 7px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--green); }
+    .card-live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 7px var(--green); animation: blink 2s ease-in-out infinite; }
 
-    .card-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px; font-weight: 800;
-      letter-spacing: -0.5px; margin-bottom: 10px;
-      line-height: 1.1;
-    }
+    .card-name { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 10px; line-height: 1.1; }
+    .card-desc { font-size: 13px; font-weight: 400; color: var(--dim); line-height: 1.75; margin-bottom: 28px; flex: 1; }
 
-    .card-desc {
-      font-size: 13px; font-weight: 400;
-      color: var(--dim); line-height: 1.75;
-      margin-bottom: 28px; flex: 1;
-    }
-
-    .card-footer {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid var(--border);
-      padding-top: 18px; margin-top: auto;
-    }
-
+    .card-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 18px; margin-top: auto; }
     .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-    .card-tag {
-      font-size: 9px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 1.5px;
-      padding: 3px 9px; border: 1px solid var(--border);
-      color: var(--dimmer);
-    }
-
-    .card-arrow {
-      font-size: 16px; color: var(--dimmer);
-      transition: color 0.2s, transform 0.2s;
-    }
+    .card-tag { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 3px 9px; border: 1px solid var(--border); color: var(--dimmer); }
+    .card-arrow { font-size: 16px; color: var(--dimmer); transition: color 0.2s, transform 0.2s; }
     .card:hover .card-arrow { color: var(--gold); transform: translate(3px, -3px); }
 
-    /* ── FEATURED (large card) ── */
-    .card.featured {
-      grid-column: span 2;
-      flex-direction: row; gap: 40px; align-items: center;
-    }
+    /* featured */
+    .card.featured { grid-column: span 2; flex-direction: row; gap: 40px; align-items: center; }
     .card.featured .card-content { flex: 1; }
-    .card.featured .card-visual {
-      width: 200px; height: 120px; flex-shrink: 0;
-      border: 1px solid var(--border); background: var(--bg);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 48px;
-    }
+    .card.featured .card-visual { width: 180px; height: 110px; flex-shrink: 0; border: 1px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; }
+    .card.featured .card-visual svg { width: 48px; height: 48px; stroke: rgba(240,237,232,0.1); fill: none; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.3s; }
+    .card.featured:hover .card-visual svg { stroke: rgba(232,197,71,0.25); }
 
     /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 28px 56px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
+    footer { border-top: 1px solid var(--border); padding: 28px 56px; display: flex; align-items: center; justify-content: space-between; }
     .footer-left { font-size: 12px; font-weight: 500; color: var(--dimmer); }
     .footer-right { font-size: 12px; font-style: italic; color: var(--dimmer); }
 
@@ -256,7 +142,6 @@
 <div id="cur-dot"></div>
 <div id="cur-ring"></div>
 
-<!-- NAV -->
 <nav>
   <div class="nav-logo">Brett<span class="accent">.</span></div>
   <div class="nav-right">
@@ -265,23 +150,13 @@
   </div>
 </nav>
 
-<!-- HERO -->
 <div class="hero">
   <div class="hero-glow"></div>
-  <div class="hero-tag">
-    <div class="nav-dot"></div>
-    Self-hosted · Built from scratch · Oracle Cloud
-  </div>
-  <div class="hero-headline">
-    Things I<br/>
-    <span class="accent">built.</span>
-  </div>
-  <p class="hero-sub">
-    A collection of web apps, tools, and experiments — all running on my own server. Cybersecurity student from Nairobi building real things.
-  </p>
+  <div class="hero-tag"><div class="nav-dot"></div> Self-hosted · Built from scratch · Oracle Cloud</div>
+  <div class="hero-headline">Things I<br/><span class="accent">built.</span></div>
+  <p class="hero-sub">A collection of web apps, tools, and experiments — all running on my own server. Cybersecurity student from Nairobi building real things.</p>
 </div>
 
-<!-- MARQUEE -->
 <div class="marquee-wrap">
   <div class="marquee-track">
     <span class="marquee-item">Brett Wambugu</span>
@@ -296,7 +171,7 @@
     <span class="marquee-item">Brett Wambugu</span>
     <span class="marquee-item">Nairobi Kenya</span>
     <span class="marquee-item">Self Hosted</span>
-    <span class="marquee-item">Oracle Cloud VPS</span>
+    <span class="marquete-item">Oracle Cloud VPS</span>
     <span class="marquee-item">Docker</span>
     <span class="marquee-item">Flask + SQLite</span>
     <span class="marquee-item">Node.js</span>
@@ -305,44 +180,44 @@
   </div>
 </div>
 
-<!-- CARDS -->
 <div class="grid-section">
 
   <div class="grid-label">Client projects</div>
-  <div class="cards-grid" style="margin-bottom: 48px;">
+  <div class="cards-grid" style="margin-bottom:48px">
 
-    <a class="card featured" href="/timscars" id="card-timscars">
+    <!-- TIM'S CARS — featured -->
+    <a class="card featured" href="/timscars">
       <div class="card-content">
         <div class="card-top">
-          <div class="card-icon">🚗</div>
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24"><path d="M5 11l1.5-4.5h11L19 11M5 11H3v3h1m15-3h2v3h-1m-14 0h10M6 17a1 1 0 1 0 2 0 1 1 0 0 0-2 0m10 0a1 1 0 1 0 2 0 1 1 0 0 0-2 0M5 11h14"/></svg>
+          </div>
           <div class="card-live"><div class="card-live-dot"></div>Live</div>
         </div>
         <div class="card-name">Tim's Cars</div>
         <div class="card-desc">A full car dealership web application. Browse inventory, view listings, and manage stock — built and hosted entirely on my own infrastructure.</div>
         <div class="card-footer">
-          <div class="card-tags">
-            <div class="card-tag">Node.js</div>
-            <div class="card-tag">Client work</div>
-            <div class="card-tag">Full stack</div>
-          </div>
+          <div class="card-tags"><div class="card-tag">Node.js</div><div class="card-tag">Client work</div><div class="card-tag">Full stack</div></div>
           <div class="card-arrow">↗</div>
         </div>
       </div>
-      <div class="card-visual">🚗</div>
+      <div class="card-visual">
+        <svg viewBox="0 0 24 24"><path d="M5 11l1.5-4.5h11L19 11M5 11H3v3h1m15-3h2v3h-1m-14 0h10M6 17a1 1 0 1 0 2 0 1 1 0 0 0-2 0m10 0a1 1 0 1 0 2 0 1 1 0 0 0-2 0M5 11h14"/></svg>
+      </div>
     </a>
 
-    <a class="card" href="/phones" id="card-phones">
+    <!-- PHONES BY BEAMER -->
+    <a class="card" href="/phones">
       <div class="card-top">
-        <div class="card-icon">📱</div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+        </div>
         <div class="card-live"><div class="card-live-dot"></div>Live</div>
       </div>
       <div class="card-name">Phones by Beamer</div>
       <div class="card-desc">A phone listing and sales platform. Browse available devices, specs, and pricing — self-hosted with zero monthly infrastructure cost.</div>
       <div class="card-footer">
-        <div class="card-tags">
-          <div class="card-tag">Node.js</div>
-          <div class="card-tag">E-commerce</div>
-        </div>
+        <div class="card-tags"><div class="card-tag">Node.js</div><div class="card-tag">E-commerce</div></div>
         <div class="card-arrow">↗</div>
       </div>
     </a>
@@ -352,84 +227,82 @@
   <div class="grid-label">Personal tools</div>
   <div class="cards-grid">
 
+    <!-- TASK MANAGER -->
     <a class="card" href="/tasks" style="animation-delay:0.05s">
       <div class="card-top">
-        <div class="card-icon">✓</div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
         <div class="card-live"><div class="card-live-dot"></div>Live</div>
       </div>
       <div class="card-name">Task Manager</div>
       <div class="card-desc">A full-stack task tracker with user auth, custom categories, and a SQLite database. Built with Flask from scratch — no templates, no shortcuts.</div>
       <div class="card-footer">
-        <div class="card-tags">
-          <div class="card-tag">Flask</div>
-          <div class="card-tag">SQLite</div>
-          <div class="card-tag">Docker</div>
-        </div>
+        <div class="card-tags"><div class="card-tag">Flask</div><div class="card-tag">SQLite</div><div class="card-tag">Docker</div></div>
         <div class="card-arrow">↗</div>
       </div>
     </a>
 
+    <!-- BEEMERVAULT KEYS -->
     <a class="card" href="/keys" style="animation-delay:0.1s">
       <div class="card-top">
-        <div class="card-icon">🗝️</div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l2 2M13 10l2 2"/></svg>
+        </div>
         <div class="card-live"><div class="card-live-dot"></div>Live</div>
       </div>
       <div class="card-name">Beemervault Keys</div>
-      <div class="card-desc">A private password manager with PIN-protected reveal, real favicon logos pulled live, category filters, and master password login. Data stays on my server.</div>
+      <div class="card-desc">A private password manager with PIN-protected reveal, real favicon logos pulled live, category filters, and master password login.</div>
       <div class="card-footer">
-        <div class="card-tags">
-          <div class="card-tag">Security</div>
-          <div class="card-tag">Private</div>
-        </div>
+        <div class="card-tags"><div class="card-tag">Security</div><div class="card-tag">Private</div></div>
         <div class="card-arrow">↗</div>
       </div>
     </a>
 
+    <!-- HABIT TRACKER -->
     <a class="card" href="/habits" style="animation-delay:0.15s">
       <div class="card-top">
-        <div class="card-icon">📅</div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>
+        </div>
         <div class="card-live"><div class="card-live-dot"></div>Live</div>
       </div>
       <div class="card-name">Habit Tracker</div>
-      <div class="card-desc">Year, week, and day views of your habits. Calendar boxes turn green when you nail a day, red when you miss it. Streak tracking, progress rings, all synced.</div>
+      <div class="card-desc">Year, week, and day views of your habits. Calendar boxes turn green when you nail a day, red when you miss it. Streak tracking, all synced.</div>
       <div class="card-footer">
-        <div class="card-tags">
-          <div class="card-tag">Productivity</div>
-          <div class="card-tag">Calendar</div>
-        </div>
+        <div class="card-tags"><div class="card-tag">Productivity</div><div class="card-tag">Calendar</div></div>
         <div class="card-arrow">↗</div>
       </div>
     </a>
 
+    <!-- COUNTDOWN -->
     <a class="card" href="/countdown" style="animation-delay:0.2s">
       <div class="card-top">
-        <div class="card-icon">⏱</div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><polyline points="12 9 12 13 14.5 15.5"/><path d="M9 3h6M12 3v2"/></svg>
+        </div>
         <div class="card-live"><div class="card-live-dot"></div>Live</div>
       </div>
       <div class="card-name">Countdown Timer</div>
-      <div class="card-desc">Input any number of seconds. Instantly converts to hours and minutes. Animated progress ring, urgency mode at 10 seconds, works reliably in the background on mobile.</div>
+      <div class="card-desc">Input any number of seconds. Instantly converts to hours and minutes. Animated progress ring, urgency mode, works in the background on mobile.</div>
       <div class="card-footer">
-        <div class="card-tags">
-          <div class="card-tag">Utility</div>
-          <div class="card-tag">Mobile-first</div>
-        </div>
+        <div class="card-tags"><div class="card-tag">Utility</div><div class="card-tag">Mobile-first</div></div>
         <div class="card-arrow">↗</div>
       </div>
     </a>
 
+    <!-- BEEMERVAULT -->
     <a class="card" href="/" style="animation-delay:0.25s">
       <div class="card-top">
-        <div class="card-icon">🔐</div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><line x1="12" y1="15" x2="12" y2="17"/></svg>
+        </div>
         <div class="card-live"><div class="card-live-dot"></div>Live</div>
       </div>
       <div class="card-name">Beemervault</div>
       <div class="card-desc">Self-hosted Vaultwarden instance — an open-source Bitwarden-compatible password server running in Docker with full HTTPS and browser extension sync.</div>
       <div class="card-footer">
-        <div class="card-tags">
-          <div class="card-tag">Docker</div>
-          <div class="card-tag">Self-hosted</div>
-          <div class="card-tag">Security</div>
-        </div>
+        <div class="card-tags"><div class="card-tag">Docker</div><div class="card-tag">Self-hosted</div><div class="card-tag">Security</div></div>
         <div class="card-arrow">↗</div>
       </div>
     </a>
@@ -437,14 +310,12 @@
   </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-left">Brett Wambugu · Nairobi, Kenya · 2026</div>
   <div class="footer-right">Everything here runs on a $0/month server.</div>
 </footer>
 
 <script>
-  // cursor
   const dot = document.getElementById('cur-dot');
   const ring = document.getElementById('cur-ring');
   let mx=0,my=0,rx=0,ry=0;
@@ -470,18 +341,14 @@
     requestAnimationFrame(loop);
   })();
 
-  // card glow follows mouse
   document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('mousemove', e => {
       const r = card.getBoundingClientRect();
-      const x = ((e.clientX - r.left) / r.width * 100).toFixed(1);
-      const y = ((e.clientY - r.top) / r.height * 100).toFixed(1);
-      card.style.setProperty('--mx', x + '%');
-      card.style.setProperty('--my', y + '%');
+      card.style.setProperty('--mx', ((e.clientX-r.left)/r.width*100).toFixed(1)+'%');
+      card.style.setProperty('--my', ((e.clientY-r.top)/r.height*100).toFixed(1)+'%');
     });
   });
 
-  // stagger card animations
   document.querySelectorAll('.card').forEach((card, i) => {
     card.style.animationDelay = (i * 0.07) + 's';
   });
